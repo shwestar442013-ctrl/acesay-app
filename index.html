@@ -184,17 +184,8 @@ tr:hover td { background:#f9fbf9; }
 
   <!-- TAB 1 -->
   <div id="RecordTab" class="tab-content active">
-
-    <!-- Sub-tab buttons -->
-    <div style="display:flex;gap:8px;margin-bottom:12px;">
-      <button id="subTabTapper" class="btn btn-primary" style="flex:1;font-size:13px;" onclick="switchSubTab('tapper')">🌿 ခြစ်စာရင်း</button>
-      <button id="subTabDaily" class="btn btn-gray" style="flex:1;font-size:13px;" onclick="switchSubTab('daily')">👷 နေ့စား</button>
-    </div>
-
-    <!-- ခြစ်စာရင်း section -->
-    <div id="tapperSection">
     <div class="card">
-      <div class="card-title">➕ ခြစ်စာရင်း ထည့်သွင်းရန်</div>
+      <div class="card-title">➕ စာရင်းအသစ် ထည့်သွင်းရန်</div>
       <div class="form-row">
         <div class="form-col"><label>နေ့စွဲ</label><input type="date" id="recordDate"></div>
         <div class="form-col"><label>Code</label><input type="text" id="tapperCode" placeholder="001" oninput="autoFillName()"></div>
@@ -247,64 +238,7 @@ tr:hover td { background:#f9fbf9; }
       </table>
       <div id="noDataMsg" class="no-data">မှတ်တမ်း မရှိသေးပါ။</div>
     </div>
-  </div><!-- end tapperSection -->
-
-  <!-- နေ့စား section -->
-  <div id="dailySection" style="display:none;">
-    <div class="card">
-      <div class="card-title">➕ နေ့စား မှတ်တမ်း ထည့်သွင်းရန်</div>
-      <div class="form-row">
-        <div class="form-col"><label>နေ့စွဲ</label><input type="date" id="dailyDate"></div>
-        <div class="form-col"><label>Code</label><input type="text" id="dailyCode" placeholder="001" oninput="autoFillDailyName()"></div>
-        <div class="form-col"><label>အမည်</label><input type="text" id="dailyName" placeholder="Auto" readonly></div>
-      </div>
-      <div class="form-row">
-        <div class="form-col">
-          <label>ကျား/မ</label>
-          <select id="dailyGender" onchange="calcDailyDue()">
-            <option value="">ရွေးပါ</option>
-            <option value="ကျား">ကျား</option>
-            <option value="မ">မ</option>
-          </select>
-        </div>
-        <div class="form-col"><label>ကျားနှုန်း</label><input type="number" id="dailyMaleRate" placeholder="ကျားနှုန်း" min="0" oninput="calcDailyDue()"></div>
-        <div class="form-col"><label>မနှုန်း</label><input type="number" id="dailyFemaleRate" placeholder="မနှုန်း" min="0" oninput="calcDailyDue()"></div>
-      </div>
-      <div class="form-row">
-        <div class="form-col"><label>ကျသင့်ငွေ</label><input type="number" id="dailyDue" placeholder="Auto" readonly></div>
-        <div class="form-col"><label>ကြိုတင်ငွေ</label><input type="number" id="dailyAdvance" placeholder="0" min="0"></div>
-        <div class="form-col"></div>
-      </div>
-      <button class="btn btn-primary" onclick="addDailyRecord()">✅ ထည့်မည်</button>
-    </div>
-
-    <div class="card">
-      <div class="card-title">🔍 ရှာဖွေရန်</div>
-      <div class="form-row">
-        <div class="form-col"><label>နေ့စွဲ</label><input type="date" id="dailySearchDate" onchange="filterDailyRecords()"></div>
-        <div class="form-col"><label>နာမည် / Code</label><input type="text" id="dailySearchName" placeholder="ရှာပါ..." oninput="filterDailyRecords()"></div>
-        <div class="form-col" style="display:flex;align-items:flex-end;"><button class="btn btn-gray btn-full" onclick="resetDailyFilter()">🔄 အားလုံး</button></div>
-      </div>
-    </div>
-
-    <div class="stats-bar">
-      <div class="stat-chip"><div class="stat-label">👷 နေ့ရေ</div><div class="stat-value" id="dailyTotalDays">0</div></div>
-      <div class="stat-chip" style="border-left-color:#7b1fa2;"><div class="stat-label">💵 ကျသင့်</div><div class="stat-value" id="dailyTotalDue" style="color:#7b1fa2;">0</div></div>
-      <div class="stat-chip red"><div class="stat-label">💸 ကြိုတင်</div><div class="stat-value" id="dailyTotalAdv">0</div></div>
-    </div>
-
-    <div class="table-wrap">
-      <table>
-        <thead><tr>
-          <th>စဉ်</th><th>နေ့စွဲ</th><th>Code</th><th>အမည်</th>
-          <th>ကျား/မ</th><th>နှုန်း</th><th>ကျသင့် / အခြေ</th>
-          <th>ကြိုတင်</th><th>လုပ်</th>
-        </tr></thead>
-        <tbody id="dailyTableBody"></tbody>
-      </table>
-      <div id="noDailyMsg" class="no-data">နေ့စား မှတ်တမ်း မရှိသေးပါ။</div>
-    </div>
-  </div><!-- end dailySection -->
+  </div>
 
   <!-- TAB 2 -->
   <div id="DatabaseTab" class="tab-content">
@@ -343,21 +277,9 @@ tr:hover td { background:#f9fbf9; }
     <div id="settlementResult" style="display:none;">
       <div class="card">
         <div class="card-title">📊 <span id="settleWorkerName" class="name-chip"></span> ၏ မှတ်တမ်းများ</div>
-        <!-- ခြစ်မှတ်တမ်း -->
-        <div id="settleChitSection">
-        <div style="font-size:12px;font-weight:700;color:#1b5e20;margin:8px 0 4px;">🌿 ခြစ်မှတ်တမ်း</div>
         <div class="table-wrap">
           <table><thead><tr><th>နေ့စွဲ</th><th>ခြစ်ပင်</th><th>ကြိုတင်</th><th>စရံ</th></tr></thead>
           <tbody id="settleTableBody"></tbody></table>
-        </div>
-        </div>
-        <!-- နေ့စားမှတ်တမ်း -->
-        <div id="settleDailySection" style="margin-top:10px;">
-        <div style="font-size:12px;font-weight:700;color:#e65100;margin:8px 0 4px;">👷 နေ့စားမှတ်တမ်း</div>
-        <div class="table-wrap">
-          <table><thead><tr><th>နေ့စွဲ</th><th>ကျား/မ</th><th>နှုန်း</th><th>ကျသင့်</th><th>ကြိုတင်</th></tr></thead>
-          <tbody id="settleDailyTableBody"></tbody></table>
-        </div>
         </div>
       </div>
       <div class="card">
@@ -366,12 +288,6 @@ tr:hover td { background:#f9fbf9; }
           <div class="settle-row">
             <span class="settle-label">🌿 ပင်: <b><span id="sTrees">0</span></b> × <input type="number" id="pricePerTree" class="mini-input" placeholder="ခြစ်ခ" oninput="updateMath()"> ကျပ်</span>
             <span style="font-size:13px;font-weight:700;color:#d84315;">ရသင့်: <b><span id="sEarned">0</span></b></span>
-          </div>
-          <div class="settle-row">
-            <span class="settle-label">👷 နေ့စား ရသင့်: <b style="color:#e65100"><span id="sDailyEarned">0</span></b> ကျပ်</span>
-          </div>
-          <div class="settle-row">
-            <span class="settle-label" style="font-weight:800;color:#1b5e20;">💵 စုစုပေါင်း ရသင့်: <b><span id="sTotalEarned">0</span></b> ကျပ်</span>
           </div>
           <div class="settle-row">
             <span class="settle-label">💸 ကြိုတင် ကျန်: <b style="color:#c62828"><span id="sTotalAdv">0</span></b> ကျပ်<br>
@@ -1177,168 +1093,4 @@ window.addEventListener('load', () => {
     }, 2000);
   }
 });
-</script>
-
-<!-- Daily Worker JS -->
-<script>
-// ===== Sub Tab Switch =====
-window.switchSubTab = function(tab) {
-  document.getElementById('tapperSection').style.display = tab==='tapper'?'block':'none';
-  document.getElementById('dailySection').style.display = tab==='daily'?'block':'none';
-  document.getElementById('subTabTapper').className = 'btn '+(tab==='tapper'?'btn-primary':'btn-gray');
-  document.getElementById('subTabDaily').className = 'btn '+(tab==='daily'?'btn-primary':'btn-gray');
-  document.getElementById('subTabTapper').style.cssText='flex:1;font-size:13px;';
-  document.getElementById('subTabDaily').style.cssText='flex:1;font-size:13px;';
-  if(tab==='daily') renderDailyRecords(getDailyRecords());
-};
-
-function getDailyRecords() {
-  const all = ls('dailyRecords')||[];
-  return currentRole==='admin'?all:all.filter(r=>r.owner===currentUser);
-}
-
-window.autoFillDailyName = function() {
-  const code = document.getElementById('dailyCode').value.trim().toUpperCase();
-  document.getElementById('dailyName').value = workersDB[code]||'';
-};
-
-window.calcDailyDue = function() {
-  const g = document.getElementById('dailyGender').value;
-  const mR = parseInt(document.getElementById('dailyMaleRate').value)||0;
-  const fR = parseInt(document.getElementById('dailyFemaleRate').value)||0;
-  document.getElementById('dailyDue').value = g==='ကျား'?mR:(g==='မ'?fR:'');
-};
-
-window.addDailyRecord = function() {
-  const dateVal=document.getElementById('dailyDate').value;
-  const code=document.getElementById('dailyCode').value.trim().toUpperCase();
-  const name=document.getElementById('dailyName').value.trim();
-  const gender=document.getElementById('dailyGender').value;
-  const mRate=parseInt(document.getElementById('dailyMaleRate').value)||0;
-  const fRate=parseInt(document.getElementById('dailyFemaleRate').value)||0;
-  const adv=parseInt(document.getElementById('dailyAdvance').value)||0;
-  if(!dateVal){toast('နေ့စွဲ ထည့်ပါ',true);return;}
-  if(!code||!name){toast('Code ထည့်ပါ',true);return;}
-  if(!gender){toast('ကျား/မ ရွေးပါ',true);return;}
-  const rate=gender==='ကျား'?mRate:fRate;
-  if(!rate){toast('နှုန်းထား ထည့်ပါ',true);return;}
-  const all=ls('dailyRecords')||[];
-  all.unshift({id:Date.now(),date:dateVal,code,name,gender,maleRate:mRate,femaleRate:fRate,rate,due:rate,advance:adv,status:'unsettled',owner:currentUser});
-  ss('dailyRecords',all);
-  renderDailyRecords(getDailyRecords());
-  ['dailyCode','dailyName','dailyDue','dailyAdvance'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('dailyGender').value='';
-  document.getElementById('dailyCode').focus();
-  toast('✅ နေ့စားမှတ်တမ်း ထည့်ပြီး');
-};
-
-function renderDailyRecords(data) {
-  const tbody=document.getElementById('dailyTableBody');
-  const noMsg=document.getElementById('noDailyMsg');
-  tbody.innerHTML='';
-  let tD=0,tDue=0,tAdv=0;
-  if(!data.length){noMsg.style.display='block';}
-  else{
-    noMsg.style.display='none';
-    data.forEach((r,i)=>{
-      tD++;tDue+=r.due||0;tAdv+=r.advance||0;
-      const st=r.status==='settled'?'<span class="badge badge-settled">✅ ရှင်းပြီး</span>':'<span class="badge badge-unsettled">⏳ မရှင်းရသေး</span>';
-      const del=currentRole==='admin'?`<button class="btn btn-red btn-sm" onclick="deleteDailyRecord(${r.id})">🗑️</button>`:'-';
-      const row=document.createElement('tr');
-      row.innerHTML=`<td>${i+1}</td><td>${r.date}</td><td><b>${r.code}</b></td><td>${r.name}</td><td>${r.gender}</td><td>${(r.rate||0).toLocaleString()}</td><td><div style="font-size:14px;font-weight:800;color:#e65100;">${(r.due||0).toLocaleString()} ကျပ်</div><div style="margin-top:2px;">${st}</div></td><td>${(r.advance||0).toLocaleString()}</td><td>${del}</td>`;
-      tbody.appendChild(row);
-    });
-  }
-  document.getElementById('dailyTotalDays').textContent=tD.toLocaleString();
-  document.getElementById('dailyTotalDue').textContent=tDue.toLocaleString();
-  document.getElementById('dailyTotalAdv').textContent=tAdv.toLocaleString();
-}
-
-window.deleteDailyRecord = function(id) {
-  if(currentRole!=='admin'){toast('Admin သာ ဖျက်နိုင်',true);return;}
-  if(!confirm('ဖျက်မည်မှာ သေချာပါသလား?'))return;
-  ss('dailyRecords',(ls('dailyRecords')||[]).filter(r=>r.id!==id));
-  renderDailyRecords(getDailyRecords());
-  toast('🗑️ ဖျက်ပြီး');
-};
-
-window.filterDailyRecords=function(){
-  const d=document.getElementById('dailySearchDate').value;
-  const n=document.getElementById('dailySearchName').value.trim().toLowerCase();
-  renderDailyRecords(getDailyRecords().filter(r=>(!d||r.date===d)&&(!n||r.name.toLowerCase().includes(n)||r.code.toLowerCase().includes(n))));
-};
-
-window.resetDailyFilter=function(){
-  document.getElementById('dailySearchDate').value='';
-  document.getElementById('dailySearchName').value='';
-  renderDailyRecords(getDailyRecords());
-};
-
-// Override findUnsettled to include daily records
-const _origFindUnsettled = window.findUnsettled;
-window.findUnsettled = function() {
-  _origFindUnsettled();
-  const code=document.getElementById('settleCode').value.trim().toUpperCase();
-  if(!code||!workersDB[code])return;
-  const s=document.getElementById('settleStart').value;
-  const e=document.getElementById('settleEnd').value;
-  const allDaily=(ls('dailyRecords')||[]);
-  let dailyRecs=allDaily.filter(r=>r.code===code&&r.status!=='settled');
-  if(s)dailyRecs=dailyRecs.filter(r=>r.date>=s);
-  if(e)dailyRecs=dailyRecs.filter(r=>r.date<=e);
-  const tbody=document.getElementById('settleDailyTableBody');
-  tbody.innerHTML='';
-  let dailyTotal=0,dailyAdv=0;
-  dailyRecs.forEach(r=>{
-    dailyTotal+=r.due||0;dailyAdv+=r.advance||0;
-    const row=document.createElement('tr');
-    row.innerHTML=`<td>${r.date}</td><td>${r.gender}</td><td>${(r.rate||0).toLocaleString()}</td><td>${(r.due||0).toLocaleString()}</td><td>${(r.advance||0).toLocaleString()}</td>`;
-    tbody.appendChild(row);
-  });
-  // Update totals to include daily
-  const curAdv=parseInt(document.getElementById('sTotalAdv').textContent.replace(/,/g,''))||0;
-  document.getElementById('sTotalAdv').textContent=(curAdv+dailyAdv).toLocaleString();
-  document.getElementById('sDailyEarned').textContent=dailyTotal.toLocaleString();
-  window._dailySettlingRecs=dailyRecs;
-  window._dailyTotal=dailyTotal;
-  updateMath();
-};
-
-// Override updateMath to include daily
-const _origUpdateMath=window.updateMath;
-window.updateMath=function(){
-  _origUpdateMath();
-  const dailyEarned=window._dailyTotal||0;
-  const chitEarned=parseInt(document.getElementById('sEarned').textContent.replace(/,/g,''))||0;
-  document.getElementById('sDailyEarned').textContent=dailyEarned.toLocaleString();
-  document.getElementById('sTotalEarned').textContent=(chitEarned+dailyEarned).toLocaleString();
-  const pA=parseInt(document.getElementById('advPayback').value)||0;
-  const pD=parseInt(document.getElementById('depPayback').value)||0;
-  document.getElementById('sNetPay').textContent=(chitEarned+dailyEarned-pA-pD).toLocaleString();
-};
-
-// Override markSettled to also settle daily records
-const _origMarkSettled=window.markSettled;
-window.markSettled=function(){
-  const dailyRecs=window._dailySettlingRecs||[];
-  if(dailyRecs.length){
-    const allDaily=ls('dailyRecords')||[];
-    dailyRecs.forEach(sr=>{
-      const idx=allDaily.findIndex(r=>r.id===sr.id);
-      if(idx!==-1)allDaily[idx].status='settled';
-    });
-    ss('dailyRecords',allDaily);
-  }
-  _origMarkSettled();
-};
-
-// Set today date for daily form after login
-const _origDoLogin=window.doLogin;
-window.doLogin=function(){
-  _origDoLogin.apply(this,arguments);
-  setTimeout(()=>{
-    const el=document.getElementById('dailyDate');
-    if(el) el.value=new Date().toISOString().split('T')[0];
-  },100);
-};
 </script>
