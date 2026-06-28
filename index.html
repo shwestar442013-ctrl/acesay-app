@@ -826,7 +826,13 @@ window.findUnsettled = function() {
     let f = records.filter(r=>r.code===code&&r.status!=='settled');
     if (s) f=f.filter(r=>r.date>=s);
     if (e) f=f.filter(r=>r.date<=e);
-    if (!f.length) {
+    
+    // Check daily records too
+    let dailyCheck = (ls('dailyRecords')||[]).filter(r=>r.code===code&&r.status!=='settled');
+    if (s) dailyCheck=dailyCheck.filter(r=>r.date>=s);
+    if (e) dailyCheck=dailyCheck.filter(r=>r.date<=e);
+    
+    if (!f.length && !dailyCheck.length) {
         res.style.display='none';
         noMsg.innerHTML=`✅ <b>${workersDB[code]}</b> မရှင်းရသေးသော မှတ်တမ်း မရှိ`;
         noMsg.style.display='block'; return;
