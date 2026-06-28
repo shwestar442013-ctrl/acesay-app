@@ -1332,11 +1332,13 @@ window.markSettled=function(){
   _origMarkSettled();
 };
 
-// Set today date for daily form on login
+// Set today date for daily form after login
 const _origDoLogin=window.doLogin;
 window.doLogin=function(){
-  _origDoLogin();
-  if(document.getElementById('dailyDate'))
-    document.getElementById('dailyDate').value=new Date().toISOString().split('T')[0];
+  _origDoLogin.apply(this,arguments);
+  setTimeout(()=>{
+    const el=document.getElementById('dailyDate');
+    if(el) el.value=new Date().toISOString().split('T')[0];
+  },100);
 };
 </script>
