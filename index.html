@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>အစေးခြစ်လုပ်ငန်း</title>
+
+<!-- PWA Meta Tags -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ခြစ်လုပ်ငန်း">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#2e7d32">
+<meta name="description" content="အစေးခြစ်လုပ်ငန်း မှတ်တမ်းနှင့် စာရင်းရှင်းစနစ်">
+
+<!-- PWA Manifest -->
+<link rel="manifest" href="manifest.json">
+
+<!-- Apple Touch Icons (iPhone Home Screen) -->
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
+
+<!-- Favicon -->
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #eef4ee; font-family: 'Segoe UI', sans-serif, 'Pyidaungsu'; color: #2d3a2d; min-height: 100vh; }
+
+/* Login */
+#loginScreen { min-height:100vh; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#1b5e20,#2e7d32,#388e3c); }
+.login-card { background:white; border-radius:16px; padding:36px 28px; width:320px; max-width:90vw; box-shadow:0 8px 32px rgba(0,0,0,0.2); }
+.login-logo { text-align:center; font-size:46px; margin-bottom:6px; }
+.login-title { text-align:center; font-size:19px; font-weight:800; color:#1b5e20; margin-bottom:3px; }
+.login-sub { text-align:center; font-size:12px; color:#78909c; margin-bottom:22px; }
+.login-label { display:block; font-size:11px; font-weight:700; color:#546e7a; margin-bottom:5px; text-transform:uppercase; }
+.login-input { width:100%; padding:10px 13px; border:1.5px solid #cfd8dc; border-radius:8px; font-size:14px; margin-bottom:12px; background:#fafafa; }
+.login-input:focus { border-color:#2e7d32; outline:none; }
+.login-btn { width:100%; padding:12px; background:#2e7d32; color:white; border:none; border-radius:8px; font-size:15px; font-weight:700; cursor:pointer; }
+.login-btn:hover { background:#1b5e20; }
+.login-err { color:#c62828; font-size:12px; text-align:center; margin-top:8px; min-height:18px; }
+
+/* Header */
+.app-header { background:linear-gradient(135deg,#1b5e20,#2e7d32); color:white; padding:13px 18px; display:flex; align-items:center; gap:10px; box-shadow:0 3px 12px rgba(0,0,0,0.2); position:sticky; top:0; z-index:100; }
+.app-header h1 { font-size:16px; font-weight:700; flex:1; }
+.header-info { font-size:11px; opacity:.85; text-align:right; }
+.logout-btn { background:rgba(255,255,255,.2); border:1px solid rgba(255,255,255,.4); color:white; padding:4px 10px; border-radius:6px; font-size:11px; cursor:pointer; font-weight:600; }
+
+/* Container */
+.container { max-width:1000px; margin:0 auto; padding:14px; }
+
+/* Tabs */
+.tab-nav { display:flex; background:white; border-radius:12px; padding:5px; margin-bottom:14px; box-shadow:0 2px 8px rgba(0,0,0,.06); gap:3px; }
+.tab-btn { flex:1; padding:9px 6px; border:none; background:transparent; border-radius:8px; font-size:12px; font-weight:600; color:#78909c; cursor:pointer; transition:all .2s; text-align:center; }
+.tab-btn.active { background:#2e7d32; color:white; box-shadow:0 2px 6px rgba(46,125,50,.35); }
+.tab-content { display:none; }
+.tab-content.active { display:block; }
+
+/* Cards */
+.card { background:white; border-radius:12px; padding:16px; margin-bottom:12px; box-shadow:0 2px 8px rgba(0,0,0,.06); border:1px solid #e8f5e9; }
+.card-title { font-size:14px; font-weight:700; color:#1b5e20; margin-bottom:12px; padding-bottom:9px; border-bottom:2px solid #e8f5e9; display:flex; align-items:center; gap:7px; }
+
+/* Form */
+.form-row { display:flex; gap:9px; margin-bottom:9px; flex-wrap:wrap; }
+.form-col { flex:1; min-width:120px; }
+.form-col label { display:block; font-size:11px; font-weight:700; color:#546e7a; margin-bottom:4px; text-transform:uppercase; }
+input[type=text],input[type=number],input[type=date],input[type=password],select { width:100%; padding:8px 10px; border:1.5px solid #cfd8dc; border-radius:8px; font-size:13px; background:#fafafa; transition:all .2s; }
+input:focus,select:focus { border-color:#2e7d32; outline:none; background:white; }
+input[readonly] { background:#f1f8e9; color:#1b5e20; font-weight:700; border-color:#a5d6a7; }
+
+/* Buttons */
+.btn { padding:8px 13px; border:none; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; transition:all .2s; display:inline-flex; align-items:center; justify-content:center; gap:5px; white-space:nowrap; }
+.btn:active { transform:scale(.97); }
+.btn-primary { background:#2e7d32; color:white; } .btn-primary:hover { background:#1b5e20; }
+.btn-gray { background:#78909c; color:white; }
+.btn-orange { background:#f57c00; color:white; }
+.btn-red { background:#c62828; color:white; } .btn-red:hover { background:#b71c1c; }
+.btn-teal { background:#00695c; color:white; }
+.btn-full { width:100%; }
+.btn-sm { padding:4px 8px; font-size:11px; }
+
+/* Stats */
+.stats-bar { display:flex; gap:9px; flex-wrap:wrap; margin-bottom:12px; }
+.stat-chip { flex:1; min-width:110px; background:white; border-radius:10px; padding:11px 13px; border-left:4px solid #2e7d32; box-shadow:0 2px 6px rgba(0,0,0,.06); }
+.stat-chip .stat-label { font-size:10px; color:#78909c; font-weight:600; text-transform:uppercase; }
+.stat-chip .stat-value { font-size:18px; font-weight:800; color:#1b5e20; margin-top:2px; }
+.stat-chip.red { border-left-color:#d32f2f; } .stat-chip.red .stat-value { color:#d32f2f; }
+.stat-chip.blue { border-left-color:#0277bd; } .stat-chip.blue .stat-value { color:#0277bd; }
+
+/* Table */
+.table-wrap { overflow-x:auto; border-radius:8px; border:1px solid #e8f5e9; }
+table { width:100%; border-collapse:collapse; font-size:12px; }
+thead tr { background:#f1f8e9; }
+th { padding:9px 10px; text-align:left; color:#2e7d32; font-weight:700; white-space:nowrap; border-bottom:2px solid #c8e6c9; }
+td { padding:8px 10px; border-bottom:1px solid #f0f4f0; vertical-align:middle; }
+tr:last-child td { border-bottom:none; }
+tr:hover td { background:#f9fbf9; }
+.no-data { text-align:center; color:#90a4ae; padding:26px; font-size:13px; }
+
+/* Badge */
+.badge { padding:3px 8px; border-radius:20px; font-size:10px; font-weight:700; white-space:nowrap; }
+.badge-unsettled { background:#ffebee; color:#c62828; }
+.badge-settled { background:#e8f5e9; color:#2e7d32; }
+.badge-carryforward { background:#fff3e0; color:#e65100; }
+.badge-admin { background:#fce4ec; color:#c62828; }
+.badge-user { background:#e3f2fd; color:#0277bd; }
+
+/* Settlement */
+.settle-card { background:linear-gradient(135deg,#fff8e1,#fff3e0); border:1px solid #ffcc80; border-radius:12px; padding:16px; margin-top:12px; }
+.settle-row { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px dashed #ffcc80; gap:8px; flex-wrap:wrap; }
+.settle-row:last-of-type { border-bottom:none; }
+.settle-label { font-size:12px; color:#5d4037; font-weight:600; }
+.settle-total-row { display:flex; justify-content:space-between; align-items:center; padding:13px 0 0; margin-top:7px; border-top:2px solid #ffb74d; }
+.settle-total-label { font-size:14px; font-weight:800; color:#bf360c; }
+.settle-total-value { font-size:20px; font-weight:800; color:#bf360c; }
+.mini-input { width:95px!important; padding:4px 6px!important; border-color:#f57c00!important; font-size:12px!important; display:inline-block; }
+.name-chip { display:inline-block; background:#e8f5e9; color:#1b5e20; font-weight:700; padding:2px 9px; border-radius:20px; font-size:12px; }
+
+.action-row { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:9px; }
+.toast { position:fixed; bottom:18px; right:18px; background:#1b5e20; color:white; padding:10px 16px; border-radius:10px; font-size:12px; font-weight:600; box-shadow:0 4px 16px rgba(0,0,0,.2); z-index:9999; transform:translateY(80px); opacity:0; transition:all .3s; }
+.toast.show { transform:translateY(0); opacity:1; }
+.toast.error { background:#c62828; }
+
+/* Admin hidden */
+.admin-only { display:none; }
+
+@media(max-width:600px) {
+    .app-header h1 { font-size:13px; }
+    .tab-btn { font-size:10px; padding:7px 4px; }
+}
+</style>
+</head>
+<body>
+
+
+<!-- LICENSE SCREEN -->
+<div id="licenseScreen" style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1b5e20,#2e7d32);">
+  <div class="login-card">
+    <div class="login-logo">🔑</div>
+    <div class="login-title">License Key လိုအပ်သည်</div>
+    <div class="login-sub">Admin ထံမှ License Key ရယူပါ</div>
+    <label class="login-label">License Key</label>
+    <input type="text" id="licenseInput" class="login-input" placeholder="KEY-XXXX-XXXX-XXXX" style="text-transform:uppercase;letter-spacing:2px;">
+    <button class="login-btn" onclick="activateLicense()">✅ အတည်ပြုမည်</button>
+    <div class="login-err" id="licenseErr"></div>
+
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">🌿</div>
+    <div class="login-title">အစေးခြစ်လုပ်ငန်း</div>
+    <div class="login-sub">မှတ်တမ်းနှင့် စာရင်းရှင်းစနစ်</div>
+    <label class="login-label">အသုံးပြုသူအမည်</label>
+    <input type="text" id="loginUser" class="login-input" placeholder="username">
+    <label class="login-label">Password</label>
+    <input type="password" id="loginPass" class="login-input" placeholder="••••••">
+    <button class="login-btn" onclick="doLogin()">🔐 ဝင်မည်</button>
+    <div class="login-err" id="loginErr"></div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="mainApp" style="display:none;">
+<header class="app-header">
+  <div style="font-size:22px;">🌿</div>
+  <h1>အစေးခြစ်လုပ်ငန်း မှတ်တမ်းစနစ်</h1>
+  <div class="header-info">
+    <div id="headerUser"></div>
+    <span id="headerRole"></span>
+  </div>
+  <button class="logout-btn" onclick="doLogout()">ထွက်</button>
+</header>
+
+<div class="container">
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="openTab(event,'RecordTab')">📋 မှတ်တမ်း</button>
+    <button class="tab-btn" onclick="openTab(event,'DatabaseTab')">👷 အလုပ်သမား</button>
+    <button class="tab-btn" onclick="openTab(event,'SettlementTab')">💰 စာရင်းရှင်း</button>
+    <button class="tab-btn admin-only" id="adminTabBtn" onclick="openTab(event,'AdminTab')">⚙️ Admin</button>
+  </div>
+
+  <!-- TAB 1 -->
+  <div id="RecordTab" class="tab-content active">
+    <div class="card">
+      <div class="card-title">➕ စာရင်းအသစ် ထည့်သွင်းရန်</div>
+      <div class="form-row">
+        <div class="form-col"><label>နေ့စွဲ</label><input type="date" id="recordDate"></div>
+        <div class="form-col"><label>Code</label><input type="text" id="tapperCode" placeholder="001" oninput="autoFillName()"></div>
+        <div class="form-col"><label>အမည်</label><input type="text" id="tapperName" placeholder="Auto" readonly></div>
+      </div>
+      <div class="form-row">
+        <div class="form-col"><label>ခြစ်ပင်</label><input type="number" id="treeCount" placeholder="500" min="0" oninput="calcDue()"></div>
+        <div class="form-col"><label>တစ်ပင်ခြစ်ခ</label><input type="number" id="pricePerTreeEntry" placeholder="150" min="0" oninput="calcDue()"></div>
+        <div class="form-col"><label>ကျသင့်ငွေ</label><input type="number" id="dueAmount" placeholder="Auto" readonly></div>
+      </div>
+      <div class="form-row">
+        <div class="form-col"><label>ကြိုတင်ငွေ</label><input type="number" id="advanceMoney" placeholder="0" min="0"></div>
+        <div class="form-col"><label>စရံငွေ</label><input type="number" id="depositMoney" placeholder="0" min="0"></div>
+        <div class="form-col"></div>
+      </div>
+      <button class="btn btn-primary" onclick="addRecord()">✅ ထည့်မည်</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔍 ရှာဖွေရန်</div>
+      <div class="form-row">
+        <div class="form-col"><label>နေ့စွဲ</label><input type="date" id="searchDate" onchange="filterRecords()"></div>
+        <div class="form-col"><label>နာမည် / Code</label><input type="text" id="searchName" placeholder="ရှာပါ..." oninput="filterRecords()"></div>
+        <div class="form-col" style="display:flex;align-items:flex-end;"><button class="btn btn-gray btn-full" onclick="resetFilter()">🔄 အားလုံး</button></div>
+      </div>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat-chip"><div class="stat-label">🌿 ခြစ်ပင်</div><div class="stat-value" id="totalTrees">0</div></div>
+      <div class="stat-chip" style="border-left-color:#7b1fa2;"><div class="stat-label">💵 ကျသင့်</div><div class="stat-value" id="totalDue" style="color:#7b1fa2;">0</div></div>
+      <div class="stat-chip red"><div class="stat-label">💸 ကြိုတင်</div><div class="stat-value" id="totalAdvance">0</div></div>
+      <div class="stat-chip blue"><div class="stat-label">🏦 စရံ</div><div class="stat-value" id="totalDeposit">0</div></div>
+    </div>
+
+    <div class="action-row">
+      <button class="btn btn-orange" onclick="exportToCSV()">📤 CSV ထုတ်</button>
+      <button class="btn btn-primary admin-only" id="importBtn" onclick="document.getElementById('csvImportFile').click()">📥 CSV သွင်း (Admin)</button>
+      <input type="file" id="csvImportFile" accept=".csv" style="display:none;" onchange="importCSV(event)">
+      <button class="btn btn-teal" onclick="window.print()">🖨️ Print</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>စဉ်</th><th>နေ့စွဲ</th><th>Code</th><th>အမည်</th>
+          <th>ခြစ်ပင်</th><th>ခြစ်ခ</th><th>ကျသင့်ငွေ / အခြေအနေ</th>
+          <th>ကြိုတင်</th><th>စရံ</th><th>လုပ်</th>
+        </tr></thead>
+        <tbody id="recordTableBody"></tbody>
+      </table>
+      <div id="noDataMsg" class="no-data">မှတ်တမ်း မရှိသေးပါ။</div>
+    </div>
+  </div>
+
+  <!-- TAB 2 -->
+  <div id="DatabaseTab" class="tab-content">
+    <div class="card admin-only" id="addWorkerCard">
+      <div class="card-title">👤 အလုပ်သမားအသစ်</div>
+      <div class="form-row">
+        <div class="form-col"><label>Code</label><input type="text" id="newWorkerCode" placeholder="001"></div>
+        <div class="form-col"><label>နာမည်</label><input type="text" id="newWorkerName" placeholder="နာမည်"></div>
+        <div class="form-col" style="display:flex;align-items:flex-end;"><button class="btn btn-primary btn-full" onclick="addWorker()">💾 သိမ်း</button></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">📋 အလုပ်သမားစာရင်း</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>စဉ်</th><th>Code</th><th>အမည်</th><th class="admin-only">လုပ်</th></tr></thead>
+          <tbody id="workerTableBody"></tbody>
+        </table>
+        <div id="noWorkerMsg" class="no-data">အလုပ်သမား မရှိသေးပါ။</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3 -->
+  <div id="SettlementTab" class="tab-content">
+    <div class="card">
+      <div class="card-title">🔎 အလုပ်သမား ရှာရန်</div>
+      <p style="font-size:11px;color:#78909c;margin-bottom:10px;">မရှင်းရသေးသော မှတ်တမ်းများသာ ဆွဲယူပေးသည်။</p>
+      <div class="form-row">
+        <div class="form-col"><label>Code *</label><input type="text" id="settleCode" placeholder="Code" oninput="findUnsettled()"></div>
+        <div class="form-col"><label>စတင်နေ့</label><input type="date" id="settleStart" onchange="findUnsettled()"></div>
+        <div class="form-col"><label>ပြီးဆုံးနေ့</label><input type="date" id="settleEnd" onchange="findUnsettled()"></div>
+      </div>
+    </div>
+    <div id="noSettleMsg" class="no-data" style="background:white;border-radius:12px;border:1px solid #e8f5e9;padding:24px;margin-bottom:12px;">👆 Code ရိုက်ထည့်ပါ</div>
+    <div id="settlementResult" style="display:none;">
+      <div class="card">
+        <div class="card-title">📊 <span id="settleWorkerName" class="name-chip"></span> ၏ မှတ်တမ်းများ</div>
+        <div class="table-wrap">
+          <table><thead><tr><th>နေ့စွဲ</th><th>ခြစ်ပင်</th><th>ကြိုတင်</th><th>စရံ</th></tr></thead>
+          <tbody id="settleTableBody"></tbody></table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">🧮 တွက်ချက်ရန်</div>
+        <div class="settle-card">
+          <div class="settle-row">
+            <span class="settle-label">🌿 ပင်: <b><span id="sTrees">0</span></b> × <input type="number" id="pricePerTree" class="mini-input" placeholder="ခြစ်ခ" oninput="updateMath()"> ကျပ်</span>
+            <span style="font-size:13px;font-weight:700;color:#d84315;">ရသင့်: <b><span id="sEarned">0</span></b></span>
+          </div>
+          <div class="settle-row">
+            <span class="settle-label">💸 ကြိုတင် ကျန်: <b style="color:#c62828"><span id="sTotalAdv">0</span></b> ကျပ်<br>
+              <small>ယခုပေး →</small> <input type="number" id="advPayback" class="mini-input" placeholder="0" oninput="updateMath()"> ကျပ်
+            </span>
+            <span style="font-size:11px;text-align:right;">
+              ပေးလိုက်: <b style="color:#1b5e20"><span id="sPaidAdv">0</span></b><br>
+              ကျန်: <b style="color:#c62828"><span id="sRemAdv">0</span></b>
+            </span>
+          </div>
+          <div class="settle-row">
+            <span class="settle-label">🏦 စရံ ကျန်: <b style="color:#c62828"><span id="sTotalDep">0</span></b> ကျပ်<br>
+              <small>ယခုပေး →</small> <input type="number" id="depPayback" class="mini-input" placeholder="0" oninput="updateMath()"> ကျပ်
+            </span>
+            <span style="font-size:11px;text-align:right;">
+              ပေးလိုက်: <b style="color:#1b5e20"><span id="sPaidDep">0</span></b><br>
+              ကျန်: <b style="color:#c62828"><span id="sRemDep">0</span></b>
+            </span>
+          </div>
+          <div class="settle-total-row">
+            <span class="settle-total-label">💵 ထုတ်ပေးလိုက်သောငွေ</span>
+            <span class="settle-total-value"><span id="sNetPay">0</span> ကျပ်</span>
+          </div>
+        </div>
+        <button class="btn btn-red btn-full" style="margin-top:12px;font-size:14px;padding:12px;" onclick="markSettled()">✅ စာရင်းရှင်းပြီး</button>
+      </div>
+    </div>
+
+    <!-- History -->
+    <div class="card" style="margin-top:6px;">
+      <div class="card-title">📜 ရှင်းပြီးသောစာရင်း</div>
+      <div class="action-row" style="margin-bottom:7px;">
+        <button class="btn btn-gray btn-sm" onclick="renderHistory()">🔄 ပြန်တင်</button>
+        <button class="btn btn-red btn-sm admin-only" onclick="clearHistory()">🗑️ ဖျက်</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>စဉ်</th><th>ရှင်းနေ့</th><th>Code/အမည်</th><th>ကာလ</th><th>ပေးလိုက်ငွေ</th><th>ကြိုကျန်</th><th>စရံကျန်</th></tr></thead>
+          <tbody id="historyBody"></tbody>
+        </table>
+        <div id="noHistoryMsg" class="no-data">ရှင်းပြီးသောစာရင်း မရှိသေးပါ။</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 4: ADMIN -->
+  <div id="AdminTab" class="tab-content">
+    <div class="card">
+      <div class="card-title">🔑 License Key စီမံခန့်ခွဲရန်</div>
+      <p style="font-size:12px;color:#78909c;margin-bottom:10px;">Key တစ်ခု generate လုပ်ပြီး user တစ်ယောက်ကို ပေးပါ။ Key ထည့်မှသာ app ဖွင့်နိုင်မည်။</p>
+      <div class="form-row">
+        <div class="form-col"><label>အမည် (ဘယ်သူ့အတွက်)</label><input type="text" id="keyForUser" placeholder="ဥပမာ - မောင်မောင်"></div>
+        <div class="form-col"><label>Username</label><input type="text" id="keyUsername" placeholder="ဥပမာ - maung1"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-col"><label>Password</label><input type="password" id="keyPassword" placeholder="အနည်းဆုံး ၄ လုံး"></div>
+        <div class="form-col" style="display:flex;align-items:flex-end;">
+          <button class="btn btn-primary btn-full" onclick="generateKey()">🔑 Key ဆောက်မည်</button>
+        </div>
+      </div>
+      <div id="generatedKeyBox" style="display:none;margin-top:10px;padding:14px;background:#e8f5e9;border-radius:8px;border:1px solid #a5d6a7;">
+        <div style="font-size:11px;color:#546e7a;margin-bottom:4px;">Generated Key —</div>
+        <div id="generatedKeyText" style="font-size:18px;font-weight:800;color:#1b5e20;letter-spacing:2px;"></div>
+        <div style="font-size:11px;color:#78909c;margin-top:4px;">⚠️ ဒီ Key ကို Viber မှ တစ်ကြိမ်သာ ပေးပါ</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📋 ထုတ်ပေးပြီးသော Key များ</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Key</th><th>အမည် / Login</th><th>နေ့</th><th>လုပ်</th></tr></thead>
+          <tbody id="keyListBody"></tbody>
+        </table>
+        <div id="noKeyMsg" class="no-data">Key မထုတ်ရသေးပါ။</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">⚙️ အသုံးပြုသူ စီမံခန့်ခွဲရန်</div>
+      <div class="form-row">
+        <div class="form-col"><label>Username</label><input type="text" id="newUsername" placeholder="user1"></div>
+        <div class="form-col"><label>Password</label><input type="password" id="newUserPass" placeholder="••••••"></div>
+        <div class="form-col">
+          <label>Role</label>
+          <select id="newUserRole">
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="createUser()">➕ အကောင့်အသစ် ဖန်တီး</button>
+    </div>
+    <div class="card">
+      <div class="card-title">👥 အသုံးပြုသူများ</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Username</th><th>Role</th><th>လုပ်</th></tr></thead>
+          <tbody id="userListBody"></tbody>
+        </table>
+        <div id="noUserMsg" class="no-data">အကောင့် မရှိသေးပါ။</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- container -->
+</div><!-- mainApp -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== Storage Helpers =====
+function ls(key) { try { return JSON.parse(localStorage.getItem(key)); } catch(e) { return null; } }
+function ss(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
+
+// ===== Init =====
+(function() {
+    if (!ls('users')) {
+        ss('users', { admin: { password: 'admin123', role: 'admin' } });
+    }
+    // Init admin license (admin always has access)
+    if (!ls('licenseKeys')) {
+        ss('licenseKeys', {});
+    }
+    // Check license on load
+    const savedKey = localStorage.getItem('app_license_key');
+    const keys = ls('licenseKeys') || {};
+    
+    // Admin master key always valid
+    const adminBypassKey = 'ADMIN-MASTER-KEY-0000';
+    if (!keys[adminBypassKey]) {
+        keys[adminBypassKey] = { forUser: 'Admin Master', createdAt: new Date().toISOString().split('T')[0], createdBy: 'system' };
+        ss('licenseKeys', keys);
+    }
+    
+    const currentKey = localStorage.getItem('app_license_key');
+    const validKeys = ls('licenseKeys') || {};
+    const keyPattern = /^KEY-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/;
+    const isValidKey = currentKey && (validKeys[currentKey] || keyPattern.test(currentKey));
+    if (!isValidKey) {
+        // Show license screen, hide login
+        document.getElementById('licenseScreen').style.display = 'flex';
+        document.getElementById('loginScreen').style.display = 'none';
+    }
+})();
+
+// ===== State =====
+let currentUser = null;
+let currentRole = 'user';
+let workersDB = {};
+let records = [];
+let settledHistory = [];
+let settlingRecs = [];
+let totalTrees = 0, totalAdv = 0, totalDep = 0;
+
+function loadData() {
+    workersDB = ls('workers') || {};
+    const allRecs = ls('records') || [];
+    const allHist = ls('history') || [];
+    if (currentRole === 'admin') {
+        records = allRecs;
+        settledHistory = allHist;
+    } else {
+        records = allRecs.filter(r => r.owner === currentUser);
+        settledHistory = allHist.filter(h => h.owner === currentUser);
+    }
+}
+
+// ===== Toast =====
+function toast(msg, err=false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show' + (err?' error':'');
+    setTimeout(() => t.className='toast', 3000);
+}
+
+// ===== Tab =====
+window.openTab = function(e, name) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById(name).classList.add('active');
+    e.currentTarget.classList.add('active');
+};
+
+// ===== Login =====
+window.doLogin = function() {
+    const uRaw = document.getElementById('loginUser').value.trim();
+    const u = uRaw.toLowerCase();
+    const p = document.getElementById('loginPass').value;
+    const err = document.getElementById('loginErr');
+    err.textContent = '';
+    if (!u || !p) { err.textContent = 'Username နှင့် Password ထည့်ပါ'; return; }
+    const users = ls('users') || {};
+    // Case-insensitive username check
+    // Check in local users first (admin)
+    const matchedKey = Object.keys(users).find(k => k.toLowerCase() === u);
+    
+    // Also check in licenseKeys (for users)
+    const licKeys = ls('licenseKeys') || {};
+    const matchedLicKey = Object.values(licKeys).find(v => v.username && v.username.toLowerCase() === u && v.password === p);
+    
+    if (!matchedKey && !matchedLicKey) { err.textContent = 'Username သို့မဟုတ် Password မှားသည်'; return; }
+    
+    if (matchedKey && users[matchedKey].password === p) {
+        currentUser = matchedKey;
+        currentRole = users[matchedKey].role || 'user';
+    } else if (matchedLicKey) {
+        currentUser = matchedLicKey.username;
+        currentRole = 'user';
+    } else {
+        err.textContent = 'Username သို့မဟုတ် Password မှားသည်';
+        return;
+    }
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('mainApp').style.display = 'block';
+    document.getElementById('headerUser').textContent = u;
+    document.getElementById('headerRole').innerHTML = currentRole === 'admin'
+        ? '<span class="badge badge-admin">Admin</span>'
+        : '<span class="badge badge-user">User</span>';
+    if (currentRole === 'admin') {
+        document.querySelectorAll('.admin-only').forEach(el => {
+            el.style.setProperty('display', el.tagName==='BUTTON'?'inline-flex':'block', 'important');
+        });
+    }
+    loadData();
+    // Admin gets master key automatically
+    if (currentRole === 'admin') {
+        localStorage.setItem('app_license_key', 'ADMIN-MASTER-KEY-0000');
+    }
+    document.getElementById('recordDate').value = new Date().toISOString().split('T')[0];
+    renderRecords(records);
+    renderWorkers();
+    renderHistory();
+    if (currentRole === 'admin') { renderUserList(); renderKeyList(); }
+};
+
+window.doLogout = function() {
+    if (!confirm('ထွက်မည်မှာ သေချာပါသလား?')) return;
+    currentUser = null; currentRole = 'user';
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('mainApp').style.display = 'none';
+    document.getElementById('loginUser').value = '';
+    document.getElementById('loginPass').value = '';
+    document.getElementById('loginErr').textContent = '';
+    document.querySelectorAll('.admin-only').forEach(el => el.style.removeProperty('display'));
+};
+
+// ===== Admin: Users =====
+window.createUser = function() {
+    const u = document.getElementById('newUsername').value.trim();
+    const p = document.getElementById('newUserPass').value;
+    const r = document.getElementById('newUserRole').value;
+    if (!u || !p) { toast('Username နှင့် Password ထည့်ပါ', true); return; }
+    if (p.length < 4) { toast('Password အနည်းဆုံး ၄ လုံး', true); return; }
+    const users = ls('users') || {};
+    if (users[u]) { toast('Username ရှိနှင့်ပြီးသား', true); return; }
+    users[u] = { password: p, role: r };
+    ss('users', users);
+    document.getElementById('newUsername').value = '';
+    document.getElementById('newUserPass').value = '';
+    toast(`✅ ${u} (${r}) ဖန်တီးပြီး`);
+    renderUserList();
+};
+
+function renderUserList() {
+    const tbody = document.getElementById('userListBody');
+    const noMsg = document.getElementById('noUserMsg');
+    tbody.innerHTML = '';
+    const users = ls('users') || {};
+    const keys = Object.keys(users);
+    if (!keys.length) { noMsg.style.display='block'; return; }
+    noMsg.style.display = 'none';
+    keys.forEach(u => {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td><b>${u}</b></td>
+            <td><span class="badge ${users[u].role==='admin'?'badge-admin':'badge-user'}">${users[u].role}</span></td>
+            <td>
+                <button class="btn btn-gray btn-sm" onclick="toggleRole('${u}')">${users[u].role==='admin'?'User ပြောင်း':'Admin ပြောင်း'}</button>
+                ${u !== currentUser ? `<button class="btn btn-red btn-sm" style="margin-left:4px;" onclick="deleteUser('${u}')">🗑️</button>` : ''}
+            </td>`;
+        tbody.appendChild(row);
+    });
+}
+
+window.toggleRole = function(u) {
+    const users = ls('users') || {};
+    users[u].role = users[u].role === 'admin' ? 'user' : 'admin';
+    ss('users', users);
+    toast('✅ Role ပြောင်းပြီး');
+    renderUserList();
+};
+
+window.deleteUser = function(u) {
+    if (!confirm(`${u} ကို ဖျက်ရန် သေချာပါသလား?`)) return;
+    const users = ls('users') || {};
+    delete users[u];
+    ss('users', users);
+    toast('🗑️ ဖျက်ပြီး');
+    renderUserList();
+};
+
+// ===== Workers =====
+window.addWorker = function() {
+    const code = document.getElementById('newWorkerCode').value.trim().toUpperCase();
+    const name = document.getElementById('newWorkerName').value.trim();
+    if (!code || !name) { toast('Code နှင့် နာမည် ထည့်ပါ', true); return; }
+    workersDB[code] = name;
+    ss('workers', workersDB);
+    document.getElementById('newWorkerCode').value = '';
+    document.getElementById('newWorkerName').value = '';
+    renderWorkers();
+    toast(`✅ ${name} (${code}) သိမ်းပြီး`);
+};
+
+window.deleteWorker = function(code) {
+    if (!confirm(`${code} ဖျက်မည်မှာ သေချာပါသလား?`)) return;
+    delete workersDB[code];
+    ss('workers', workersDB);
+    renderWorkers();
+    toast('🗑️ ဖျက်ပြီး');
+};
+
+function renderWorkers() {
+    const tbody = document.getElementById('workerTableBody');
+    const noMsg = document.getElementById('noWorkerMsg');
+    tbody.innerHTML = '';
+    const keys = Object.keys(workersDB).sort();
+    if (!keys.length) { noMsg.style.display='block'; return; }
+    noMsg.style.display = 'none';
+    keys.forEach((code, i) => {
+        const row = document.createElement('tr');
+        const delBtn = currentRole==='admin' ? `<td><button class="btn btn-red btn-sm" onclick="deleteWorker('${code}')">🗑️</button></td>` : '<td></td>';
+        row.innerHTML = `<td>${i+1}</td><td><b>${code}</b></td><td>${workersDB[code]}</td>${delBtn}`;
+        tbody.appendChild(row);
+    });
+}
+
+// ===== Records =====
+window.autoFillName = function() {
+    const code = document.getElementById('tapperCode').value.trim().toUpperCase();
+    document.getElementById('tapperName').value = workersDB[code] || '';
+};
+
+window.calcDue = function() {
+    const t = parseInt(document.getElementById('treeCount').value)||0;
+    const p = parseInt(document.getElementById('pricePerTreeEntry').value)||0;
+    document.getElementById('dueAmount').value = t*p || '';
+};
+
+window.addRecord = function() {
+    const dateVal = document.getElementById('recordDate').value;
+    const code = document.getElementById('tapperCode').value.trim().toUpperCase();
+    const name = document.getElementById('tapperName').value.trim();
+    const trees = document.getElementById('treeCount').value.trim();
+    const price = parseInt(document.getElementById('pricePerTreeEntry').value)||0;
+    const adv = parseInt(document.getElementById('advanceMoney').value)||0;
+    const dep = parseInt(document.getElementById('depositMoney').value)||0;
+    if (!dateVal) { toast('နေ့စွဲ ထည့်ပါ', true); return; }
+    if (!code || !name) { toast('Code ထည့်ပါ', true); return; }
+    if (!trees) { toast('ခြစ်ပင် ထည့်ပါ', true); return; }
+    const t = parseInt(trees);
+    const allRecs = ls('records') || [];
+    allRecs.unshift({ id: Date.now(), date:dateVal, code, name, trees:t, pricePerTree:price, due:t*price, advance:adv, deposit:dep, status:'unsettled', isCarryForward:false, owner:currentUser });
+    ss('records', allRecs);
+    loadData();
+    renderRecords(records);
+    ['tapperCode','tapperName','treeCount','pricePerTreeEntry','dueAmount','advanceMoney','depositMoney'].forEach(id => document.getElementById(id).value='');
+    document.getElementById('tapperCode').focus();
+    toast('✅ မှတ်တမ်းထည့်ပြီး');
+};
+
+function renderRecords(data) {
+    const tbody = document.getElementById('recordTableBody');
+    const noMsg = document.getElementById('noDataMsg');
+    tbody.innerHTML = '';
+    let tT=0,tD=0,tA=0,tDp=0;
+    if (!data.length) { noMsg.style.display='block'; }
+    else {
+        noMsg.style.display='none';
+        data.forEach((r,i) => {
+            tT+=r.trees||0; tD+=r.due||0; tA+=r.advance||0; tDp+=r.deposit||0;
+            const statusHtml = r.status==='settled'
+                ? '<span class="badge badge-settled">✅ ရှင်းပြီး</span>'
+                : '<span class="badge badge-unsettled">⏳ မရှင်းရသေး</span>';
+            let nameD = r.name;
+            if (r.isCarryForward) nameD += ' <span class="badge badge-carryforward">လက်ကျန်</span>';
+            const delBtn = currentRole==='admin' ? `<button class="btn btn-red btn-sm" onclick="deleteRecord(${r.id})">🗑️</button>` : '-';
+            const row = document.createElement('tr');
+            row.innerHTML = `<td>${i+1}</td><td>${r.date}</td><td><b>${r.code}</b></td><td>${nameD}</td>
+                <td>${(r.trees||0).toLocaleString()}</td>
+                <td>${r.pricePerTree?r.pricePerTree.toLocaleString():'-'}</td>
+                <td><div style="font-size:14px;font-weight:800;color:#7b1fa2;">${(r.due||0).toLocaleString()} ကျပ်</div><div style="margin-top:2px;">${statusHtml}</div></td>
+                <td>${(r.advance||0).toLocaleString()}</td>
+                <td>${(r.deposit||0).toLocaleString()}</td>
+                <td>${delBtn}</td>`;
+            tbody.appendChild(row);
+        });
+    }
+    document.getElementById('totalTrees').textContent = tT.toLocaleString();
+    document.getElementById('totalDue').textContent = tD.toLocaleString();
+    document.getElementById('totalAdvance').textContent = tA.toLocaleString();
+    document.getElementById('totalDeposit').textContent = tDp.toLocaleString();
+    findUnsettled();
+}
+
+window.deleteRecord = function(id) {
+    if (currentRole!=='admin') { toast('Admin သာ ဖျက်နိုင်', true); return; }
+    if (!confirm('ဖျက်ရန် သေချာပါသလား?')) return;
+    const all = ls('records')||[];
+    ss('records', all.filter(r=>r.id!==id));
+    loadData(); filterRecords();
+    toast('🗑️ ဖျက်ပြီး');
+};
+
+window.filterRecords = function() {
+    const d = document.getElementById('searchDate').value;
+    const n = document.getElementById('searchName').value.trim().toLowerCase();
+    renderRecords(records.filter(r => (!d||r.date===d) && (!n||r.name.toLowerCase().includes(n)||r.code.toLowerCase().includes(n))));
+};
+
+window.resetFilter = function() {
+    document.getElementById('searchDate').value='';
+    document.getElementById('searchName').value='';
+    renderRecords(records);
+};
+
+window.exportToCSV = function() {
+    if (!records.length) { toast('မှတ်တမ်း မရှိပါ', true); return; }
+    let csv = '\uFEFF';
+    csv += 'စဉ်,နေ့စွဲ,Code,အမည်,ခြစ်ပင်,ခြစ်ခ,ကျသင့်,ကြိုတင်,စရံ,အခြေ\r\n';
+    records.forEach((r,i) => { csv += `${i+1},"${r.date}","${r.code}","${r.name}",${r.trees||0},${r.pricePerTree||0},${r.due||0},${r.advance||0},${r.deposit||0},"${r.status==='settled'?'ရှင်းပြီး':'မရှင်းရသေး'}"\r\n`; });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
+    a.download = `မှတ်တမ်း_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    toast('📥 CSV ထုတ်ပြီး');
+};
+
+// ===== Settlement =====
+window.findUnsettled = function() {
+    const code = document.getElementById('settleCode').value.trim().toUpperCase();
+    const s = document.getElementById('settleStart').value;
+    const e = document.getElementById('settleEnd').value;
+    const res = document.getElementById('settlementResult');
+    const noMsg = document.getElementById('noSettleMsg');
+    if (!code || !workersDB[code]) {
+        res.style.display='none'; noMsg.style.display='block';
+        noMsg.innerHTML = code&&!workersDB[code] ? `⚠️ Code <b>${code}</b> မတွေ့ပါ` : '👆 Code ရိုက်ထည့်ပါ';
+        return;
+    }
+    let f = records.filter(r=>r.code===code&&r.status!=='settled');
+    if (s) f=f.filter(r=>r.date>=s);
+    if (e) f=f.filter(r=>r.date<=e);
+    if (!f.length) {
+        res.style.display='none';
+        noMsg.innerHTML=`✅ <b>${workersDB[code]}</b> မရှင်းရသေးသော မှတ်တမ်း မရှိ`;
+        noMsg.style.display='block'; return;
+    }
+    settlingRecs=f; totalTrees=0; totalAdv=0; totalDep=0;
+    const tbody=document.getElementById('settleTableBody'); tbody.innerHTML='';
+    f.forEach(r=>{
+        totalTrees+=r.trees||0; totalAdv+=r.advance||0; totalDep+=r.deposit||0;
+        const row=document.createElement('tr');
+        row.innerHTML=`<td>${r.date}${r.isCarryForward?' <span class="badge badge-carryforward">လက်ကျန်</span>':''}</td><td>${(r.trees||0).toLocaleString()}</td><td>${(r.advance||0).toLocaleString()}</td><td>${(r.deposit||0).toLocaleString()}</td>`;
+        tbody.appendChild(row);
+    });
+    document.getElementById('settleWorkerName').textContent=workersDB[code];
+    document.getElementById('sTrees').textContent=totalTrees.toLocaleString();
+    document.getElementById('sTotalAdv').textContent=totalAdv.toLocaleString();
+    document.getElementById('sTotalDep').textContent=totalDep.toLocaleString();
+    document.getElementById('advPayback').value=totalAdv||'';
+    document.getElementById('depPayback').value=totalDep||'';
+    document.getElementById('pricePerTree').value='';
+    updateMath();
+    noMsg.style.display='none'; res.style.display='block';
+};
+
+window.updateMath = function() {
+    const price=parseInt(document.getElementById('pricePerTree').value)||0;
+    const pA=Math.min(parseInt(document.getElementById('advPayback').value)||0,totalAdv);
+    const pD=Math.min(parseInt(document.getElementById('depPayback').value)||0,totalDep);
+    const earned=totalTrees*price;
+    document.getElementById('sEarned').textContent=earned.toLocaleString();
+    document.getElementById('sPaidAdv').textContent=pA.toLocaleString();
+    document.getElementById('sRemAdv').textContent=(totalAdv-pA).toLocaleString();
+    document.getElementById('sPaidDep').textContent=pD.toLocaleString();
+    document.getElementById('sRemDep').textContent=(totalDep-pD).toLocaleString();
+    document.getElementById('sNetPay').textContent=(earned-pA-pD).toLocaleString();
+};
+
+window.markSettled = function() {
+    const price=parseInt(document.getElementById('pricePerTree').value)||0;
+    if (price<=0) { toast('တစ်ပင်ခြစ်ခ ရိုက်ပါ', true); return; }
+    if (!confirm("ရှင်းပြီးအဖြစ် သတ်မှတ်မည်မှာ သေချာပါသလား?")) return;
+    const code=document.getElementById('settleCode').value.trim().toUpperCase();
+    const s=document.getElementById('settleStart').value;
+    const e=document.getElementById('settleEnd').value;
+    const pA=Math.min(parseInt(document.getElementById('advPayback').value)||0,totalAdv);
+    const pD=Math.min(parseInt(document.getElementById('depPayback').value)||0,totalDep);
+    const earned=totalTrees*price;
+    const netPay=earned-pA-pD;
+    const remAdv=totalAdv-pA, remDep=totalDep-pD;
+
+    let allRecs=ls('records')||[];
+    settlingRecs.forEach(sr=>{
+        const idx=allRecs.findIndex(r=>r.id===sr.id);
+        if(idx!==-1) allRecs[idx].status='settled';
+    });
+    if(remAdv>0||remDep>0){
+        allRecs.unshift({id:Date.now(),date:new Date().toISOString().split('T')[0],code,name:workersDB[code],trees:0,pricePerTree:0,due:0,advance:remAdv,deposit:remDep,status:'unsettled',isCarryForward:true,owner:currentUser});
+    }
+    ss('records',allRecs);
+
+    const allHist=ls('history')||[];
+    allHist.unshift({id:Date.now(),settledOn:new Date().toISOString().split('T')[0],code,name:workersDB[code],fromDate:s||settlingRecs[settlingRecs.length-1]?.date||'-',toDate:e||settlingRecs[0]?.date||'-',totalTrees,pricePerTree:price,totalEarned:earned,paidAdv:pA,paidDep:pD,netPay,remAdv,remDep,owner:currentUser});
+    ss('history',allHist);
+
+    loadData(); renderRecords(records); renderHistory();
+    document.getElementById('settlementResult').style.display='none';
+    document.getElementById('noSettleMsg').style.display='block';
+    document.getElementById('noSettleMsg').innerHTML='✅ စာရင်းရှင်းပြီး';
+    document.getElementById('settleCode').value='';
+    document.getElementById('pricePerTree').value='';
+    toast('✅ စာရင်းရှင်းပြီးပါပြီ!');
+};
+
+window.renderHistory = function() {
+    const tbody=document.getElementById('historyBody');
+    const noMsg=document.getElementById('noHistoryMsg');
+    tbody.innerHTML='';
+    if(!settledHistory.length){noMsg.style.display='block';return;}
+    noMsg.style.display='none';
+    settledHistory.forEach((h,i)=>{
+        const period=h.fromDate===h.toDate?h.fromDate:`${h.fromDate}~${h.toDate}`;
+        const row=document.createElement('tr');
+        row.innerHTML=`<td>${i+1}</td><td>${h.settledOn}</td>
+            <td><b>${h.code}</b><br><small>${h.name}</small></td>
+            <td style="font-size:11px;">${period}<br><small>${(h.totalTrees||0).toLocaleString()}ပင်×${(h.pricePerTree||0).toLocaleString()}</small></td>
+            <td><div style="font-size:14px;font-weight:800;color:#1b5e20;">${(h.netPay||0).toLocaleString()} ကျပ်</div>
+                <small style="color:#78909c;">${(h.totalEarned||0).toLocaleString()}-${(h.paidAdv||0).toLocaleString()}-${(h.paidDep||0).toLocaleString()}</small></td>
+            <td>${h.remAdv>0?`<span style="color:#c62828;font-weight:700;">${h.remAdv.toLocaleString()}</span>`:'<span class="badge badge-settled">-</span>'}</td>
+            <td>${h.remDep>0?`<span style="color:#c62828;font-weight:700;">${h.remDep.toLocaleString()}</span>`:'<span class="badge badge-settled">-</span>'}</td>`;
+        tbody.appendChild(row);
+    });
+};
+
+window.clearHistory = function() {
+    if(currentRole!=='admin')return;
+    if(!confirm('History အားလုံး ဖျက်မည်မှာ သေချာပါသလား?'))return;
+    const allHist=(ls('history')||[]).filter(h=>h.owner!==currentUser);
+    ss('history',allHist);
+    loadData(); renderHistory();
+    toast('🗑️ ဖျက်ပြီး');
+};
+
+window.importCSV = function(e) {
+    if (currentRole !== 'admin') { toast('Admin သာ import လုပ်နိုင်သည်', true); return; }
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+        const text = ev.target.result;
+        const lines = text.split('\n').filter(l => l.trim());
+        if (lines.length < 2) { toast('CSV ဖိုင် မှားနေသည်', true); return; }
+        
+        const allRecs = ls('records') || [];
+        let added = 0, skipped = 0;
+        
+        // Skip header row (line 0)
+        for (let i = 1; i < lines.length; i++) {
+            const cols = lines[i].split(',').map(c => c.replace(/^"|"$/g, '').trim());
+            if (cols.length < 9) continue;
+            
+            // CSV format: စဉ်,နေ့စွဲ,Code,အမည်,ခြစ်ပင်,ခြစ်ခ,ကျသင့်,ကြိုတင်,စရံ,အခြေ
+            const dateVal = cols[1];
+            const code = cols[2];
+            const name = cols[3];
+            const trees = parseInt(cols[4]) || 0;
+            const pricePerTree = parseInt(cols[5]) || 0;
+            const due = parseInt(cols[6]) || 0;
+            const advance = parseInt(cols[7]) || 0;
+            const deposit = parseInt(cols[8]) || 0;
+            const status = cols[9] === 'ရှင်းပြီး' ? 'settled' : 'unsettled';
+            
+            if (!dateVal || !code || !name) { skipped++; continue; }
+            
+            // Check duplicate (same date + code + trees)
+            const isDup = allRecs.some(r => r.date === dateVal && r.code === code && r.trees === trees && r.advance === advance);
+            if (isDup) { skipped++; continue; }
+            
+            allRecs.unshift({
+                id: Date.now() + i,
+                date: dateVal, code, name, trees, pricePerTree, due,
+                advance, deposit, status,
+                isCarryForward: false,
+                owner: 'imported',
+                importedBy: currentUser
+            });
+            added++;
+        }
+        
+        ss('records', allRecs);
+        loadData();
+        renderRecords(records);
+        document.getElementById('csvImportFile').value = '';
+        toast(`✅ ${added} ကြောင်း သွင်းပြီး${skipped > 0 ? ' (' + skipped + ' ကြောင်း ထပ်နေ/ချန်)' : ''}`);
+    };
+    reader.readAsText(file, 'UTF-8');
+};
+
+
+// ===== LICENSE SYSTEM =====
+
+window.adminBypass = function() {
+    const pass = prompt('Admin Password ထည့်ပါ:');
+    if (!pass) return;
+    const users = ls('users') || {};
+    // Check if any admin account matches
+    const adminUser = Object.entries(users).find(([u, d]) => d.role === 'admin' && d.password === pass);
+    if (adminUser) {
+        localStorage.setItem('app_license_key', 'ADMIN-MASTER-KEY-0000');
+        document.getElementById('licenseScreen').style.display = 'none';
+        document.getElementById('loginScreen').style.display = 'flex';
+    } else {
+        alert('Password မှားသည်');
+    }
+};
+
+function checkLicense() {
+    const savedKey = localStorage.getItem('app_license_key');
+    if (!savedKey) {
+        // No key saved - show license screen
+        document.getElementById('licenseScreen').style.display = 'flex';
+        document.getElementById('loginScreen').style.display = 'none';
+        return false;
+    }
+    // Verify key exists in valid keys list
+    const keys = ls('licenseKeys') || {};
+    if (!keys[savedKey]) {
+        // Key revoked
+        localStorage.removeItem('app_license_key');
+        document.getElementById('licenseScreen').style.display = 'flex';
+        document.getElementById('loginScreen').style.display = 'none';
+        return false;
+    }
+    return true;
+}
+
+window.activateLicense = function() {
+    const key = document.getElementById('licenseInput').value.trim().toUpperCase();
+    const errEl = document.getElementById('licenseErr');
+    errEl.textContent = '';
+    if (!key) { errEl.textContent = 'Key ထည့်ပါ'; return; }
+    
+    // Admin shortcut
+    if (key === '0000') {
+        localStorage.setItem('app_license_key', 'ADMIN-MASTER-KEY-0000');
+        document.getElementById('licenseScreen').style.display = 'none';
+        document.getElementById('loginScreen').style.display = 'flex';
+        return;
+    }
+    
+    // Verify key format: KEY-XXXX-XXXX-XXXX
+    const keyPattern = /^KEY-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/;
+    if (!keyPattern.test(key)) {
+        errEl.textContent = 'Key မှားသည်';
+        return;
+    }
+    
+    // Valid key format - save and show login screen
+    localStorage.setItem('app_license_key', key);
+    document.getElementById('licenseScreen').style.display = 'none';
+    document.getElementById('loginScreen').style.display = 'flex';
+    // Clear any previous login info
+    document.getElementById('loginUser').value = '';
+    document.getElementById('loginPass').value = '';
+    document.getElementById('loginErr').textContent = 'Key အတည်ပြုပြီး။ Username နှင့် Password ထည့်ပါ။';
+    document.getElementById('loginErr').style.color = '#2e7d32';
+};
+
+window.generateKey = function() {
+    const forUser = document.getElementById('keyForUser').value.trim();
+    const username = document.getElementById('keyUsername').value.trim();
+    const password = document.getElementById('keyPassword').value.trim();
+    if (!forUser) { toast('ဘယ်သူ့အတွက်ဆိုတာ ထည့်ပါ', true); return; }
+    if (!username) { toast('Username ထည့်ပါ', true); return; }
+    if (!password || password.length < 4) { toast('Password အနည်းဆုံး ၄ လုံး', true); return; }
+    
+    const rand = () => Math.random().toString(36).substring(2,6).toUpperCase();
+    const key = `KEY-${rand()}-${rand()}-${rand()}`;
+    
+    const keys = ls('licenseKeys') || {};
+    keys[key] = { forUser, username, password, createdAt: new Date().toISOString().split('T')[0], createdBy: currentUser };
+    ss('licenseKeys', keys);
+    
+    const info = `Key: ${key}
+Username: ${username}
+Password: ${password}`;
+    document.getElementById('generatedKeyText').innerHTML = 
+        `<div style="font-size:16px;letter-spacing:1px;color:#1b5e20;font-weight:800;">${key}</div>
+         <div style="margin-top:8px;font-size:13px;color:#546e7a;">👤 Username: <b>${username}</b></div>
+         <div style="font-size:13px;color:#546e7a;">🔒 Password: <b>${password}</b></div>
+         <div style="margin-top:8px;">
+           <button class="btn btn-teal btn-sm" onclick="copyKeyInfo('${key}','${username}','${password}')">📋 Copy လုပ်မည်</button>
+         </div>`;
+    document.getElementById('generatedKeyBox').style.display = 'block';
+    document.getElementById('keyForUser').value = '';
+    document.getElementById('keyUsername').value = '';
+    document.getElementById('keyPassword').value = '';
+    
+    renderKeyList();
+    toast('✅ Key ဆောက်ပြီး');
+};
+
+window.copyKeyInfo = function(key, username, password) {
+    const text = `🌿 အစေးခြစ်လုပ်ငန်း App
+Key: ${key}
+Username: ${username}
+Password: ${password}`;
+    navigator.clipboard.writeText(text).then(() => toast('📋 Copy ပြီး - Viber မှ ပို့ပါ'));
+};
+
+window.revokeKey = function(key) {
+    if (!confirm(`Key: ${key} ကို ပယ်ဖျက်မည်မှာ သေချာပါသလား?
+သုံးနေသူ app ဖွင့်လို့မရတော့ပါ။`)) return;
+    const keys = ls('licenseKeys') || {};
+    delete keys[key];
+    ss('licenseKeys', keys);
+    renderKeyList();
+    toast('🗑️ Key ပယ်ဖျက်ပြီး');
+};
+
+function renderKeyList() {
+    const tbody = document.getElementById('keyListBody');
+    const noMsg = document.getElementById('noKeyMsg');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    const keys = ls('licenseKeys') || {};
+    const keyList = Object.entries(keys);
+    if (!keyList.length) { noMsg.style.display='block'; return; }
+    noMsg.style.display = 'none';
+    keyList.reverse().forEach(([key, data]) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td style="font-size:11px;font-weight:700;letter-spacing:1px;">${key}</td>
+            <td>${data.forUser}<br><small style="color:#546e7a;">👤 ${data.username||'-'} / 🔒 ${data.password||'-'}</small></td>
+            <td style="font-size:11px;">${data.createdAt}</td>
+            <td><button class="btn btn-red btn-sm" onclick="revokeKey('${key}')">🚫</button></td>`;
+        tbody.appendChild(row);
+    });
+}
+
+</script>
+</body>
+</html>
+
+<!-- PWA: Service Worker Registration -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => console.log('SW registered'))
+      .catch(err => console.log('SW error:', err));
+  });
+}
+
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  showInstallBanner();
+});
+
+function showInstallBanner() {
+  if (window.matchMedia('(display-mode: standalone)').matches) return;
+  const banner = document.createElement('div');
+  banner.id = 'installBanner';
+  banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:99999;background:linear-gradient(135deg,#1b5e20,#2e7d32);color:white;padding:14px 16px;display:flex;align-items:center;gap:10px;box-shadow:0 -4px 20px rgba(0,0,0,0.3);font-family:Segoe UI,sans-serif;';
+  banner.innerHTML = '<span style="font-size:26px;">🌿</span><div style="flex:1;"><div style="font-size:13px;font-weight:700;">App ထည့်သွင်းမည်</div><div style="font-size:11px;opacity:0.85;">Home Screen မှာ ထည့်ပြီး App အဖြစ် သုံးနိုင်မည်</div></div><button onclick="installPWA()" style="background:white;color:#1b5e20;border:none;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">⬇️ ထည့်မည်</button><button onclick="document.getElementById(\'installBanner\').remove()" style="background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);color:white;padding:8px 10px;border-radius:8px;font-size:11px;cursor:pointer;">✕</button>';
+  document.body.appendChild(banner);
+}
+
+window.installPWA = async function() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  if (outcome === 'accepted') { toast('✅ App ထည့်သွင်းပြီး! Home Screen မှာ ရှာပါ'); }
+  deferredPrompt = null;
+  const b = document.getElementById('installBanner');
+  if (b) b.remove();
+};
+
+window.addEventListener('load', () => {
+  const isIOS = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
+  const isStandalone = window.navigator.standalone;
+  const dismissed = localStorage.getItem('ios_banner_dismissed');
+  if (isIOS && !isStandalone && !dismissed) {
+    setTimeout(() => {
+      const b = document.createElement('div');
+      b.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:99999;background:white;border-top:3px solid #2e7d32;padding:14px 16px;text-align:center;box-shadow:0 -4px 20px rgba(0,0,0,0.15);font-family:Segoe UI,sans-serif;';
+      b.innerHTML = '<div style="font-size:13px;font-weight:700;color:#1b5e20;margin-bottom:6px;">🌿 iPhone Home Screen မှာ ထည့်နည်း</div><div style="font-size:12px;color:#546e7a;line-height:1.8;">Safari မှ <b style="color:#2e7d32;">Share ↑</b> နှိပ်ပြီး <b style="color:#2e7d32;">"Add to Home Screen"</b> ကို ရွေးပါ</div><button onclick="localStorage.setItem(\'ios_banner_dismissed\',\'1\');this.parentElement.remove()" style="margin-top:10px;background:#2e7d32;color:white;border:none;padding:7px 20px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">အိုကေ</button>';
+      document.body.appendChild(b);
+    }, 2000);
+  }
+});
+</script>
