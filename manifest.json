@@ -1,1 +1,21 @@
-{"name":"အစေးခြစ်လုပ်ငန်း","short_name":"ခြစ်လုပ်ငန်း","start_url":"./index.html","display":"standalone","background_color":"#1b5e20","theme_color":"#2e7d32","icons":[{"src":"icon-192.png","sizes":"192x192","type":"image/png"},{"src":"icon-512.png","sizes":"512x512","type":"image/png"}]}
+{
+  "name": "အစေးခြစ်လုပ်ငန်း",
+  "short_name": "ခြစ်လုပ်ငန်း",
+  "start_url": "/acesay-app/index.html",
+  "scope": "/acesay-app/",
+  "display": "standalone",
+  "background_color": "#1b5e20",
+  "theme_color": "#2e7d32",
+  "icons": [
+    {
+      "src": "/acesay-app/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/acesay-app/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
